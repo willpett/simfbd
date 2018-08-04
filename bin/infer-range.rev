@@ -1,0 +1,52 @@
+taxa <- readTaxonData("fbd.taxa")
+#data <- readDiscreteCharacterData("asym.nex")
+
+mvi = 1
+
+# Define exponential priors on the birth rate and death rate #
+lambda ~ dnUnif(0,3)
+r ~ dnUnif(0,1)
+psi ~ dnUnif(0,40)
+
+mu := abs(r*lambda)
+
+moves[mvi++] = mvScale(lambda, lambda=0.01, weight=1)
+moves[mvi++] = mvScale(lambda, lambda=0.1,  weight=1)
+moves[mvi++] = mvScale(lambda, lambda=1.0,  weight=1)
+
+moves[mvi++] = mvScale(r, lambda=0.01, weight=1)
+moves[mvi++] = mvScale(r, lambda=0.1,  weight=1)
+moves[mvi++] = mvScale(r, lambda=1,    weight=1)
+
+moves[mvi++] = mvScale(psi, lambda=0.01, weight=1)
+moves[mvi++] = mvScale(psi, lambda=0.1,  weight=1)
+moves[mvi++] = mvScale(psi, lambda=1,    weight=1)
+
+rho <- 1.0
+
+### Define the tree-prior distribution as the fossilized birth-death process ###
+bd ~ dnFBDRMatrix(lambda=lambda, mu=mu, psi=psi, rho=rho, taxa=taxa)
+
+moves[mvi++] = mvMatrixElementScale(bd, lambda = 0.01, weight=taxa.size())
+moves[mvi++] = mvMatrixElementScale(bd, lambda = 0.1, weight=taxa.size())
+moves[mvi++] = mvMatrixElementScale(bd, lambda = 1, weight=taxa.size())
+
+moves[mvi++] = mvMatrixElementSlide(bd, delta = 0.01, weight=taxa.size())
+moves[mvi++] = mvMatrixElementSlide(bd, delta = 0.1, weight=taxa.size())
+moves[mvi++] = mvMatrixElementSlide(bd, delta = 1, weight=taxa.size())
+
+mymodel = model(bd)
+
+mni = 1
+
+# Create a vector of monitors #
+monitors[mni++] = mnModel(filename="rb.log", printgen=10)
+
+# Initialize the MCMC object #
+mymcmc = mcmc(mymodel, monitors, moves, moveschedule="random")
+
+# Run the MCMC #
+mymcmc.run(generations=10000)
+
+# Quit RevBayes #
+q()

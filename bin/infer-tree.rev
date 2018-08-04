@@ -1,0 +1,84 @@
+taxa <- readTaxonData("fbd.taxa")
+#data <- readDiscreteCharacterData("asym.nex")
+
+mvi = 1
+
+# Define exponential priors on the birth rate and death rate #
+lambda ~ dnUnif(0,3)
+r ~ dnUnif(0,1)
+psi ~ dnUnif(0,40)
+
+mu := abs(r*lambda)
+
+moves[mvi++] = mvScale(lambda, lambda=0.01, weight=1)
+moves[mvi++] = mvScale(lambda, lambda=0.1,  weight=1)
+moves[mvi++] = mvScale(lambda, lambda=1.0,  weight=1)
+
+moves[mvi++] = mvScale(r, lambda=0.01, weight=1)
+moves[mvi++] = mvScale(r, lambda=0.1,  weight=1)
+moves[mvi++] = mvScale(r, lambda=1,    weight=1)
+
+moves[mvi++] = mvScale(psi, lambda=0.01, weight=1)
+moves[mvi++] = mvScale(psi, lambda=0.1,  weight=1)
+moves[mvi++] = mvScale(psi, lambda=1,    weight=1)
+
+rho <- 1.0
+
+### Define the tree-prior distribution as the fossilized birth-death process ###
+maxage <- 0.0
+
+for(i in 1:taxa.size())
+{
+	if( taxa[i].getMaxAge() > maxage )
+	{
+		maxage <- taxa[i].getMaxAge()
+	}
+}
+
+origin_time ~ dnUniform(maxage,maxage+4)
+
+moves[mvi++] = mvScale(origin_time, lambda=0.01, weight=3)
+moves[mvi++] = mvScale(origin_time, lambda=0.1,  weight=3)
+moves[mvi++] = mvScale(origin_time, lambda=1,    weight=3)
+
+### Define the tree-prior distribution as the fossilized birth-death process ###
+fbd_tree ~ dnFBDRP(origin=origin_time, lambda=lambda, mu=mu, psi=psi, rho=rho, taxa=taxa, extended=true)
+
+moves[mvi++] = mvFNPR(fbd_tree, weight=15.0)
+#moves[mvi++] = mvCollapseExpandFossilBranch(fbd_tree, origin_time, weight=6.0)
+moves[mvi++] = mvFossilTimeSlideUniform(fbd_tree, weight=20.0)
+moves[mvi++] = mvNodeTimeSlideUniform(fbd_tree, weight=20.0)
+moves[mvi++] = mvRootTimeSlideUniform(fbd_tree, origin_time, weight=5.0)
+
+# pi_prior <- v(1,1) 
+# pi ~ dnDirichlet(pi_prior)
+
+# moves[mvi++] = mvSimplexElementScale(pi, alpha=10.0, weight=5.0)
+
+# # Create a deterministic variable for the rate matrix
+# Q := fnFreeBinary(transition_rates=pi, rescaled=true)
+
+# rate ~ dnUniform(0,100)
+
+# moves[mvi++] = mvScale(rate, lambda=0.01, weight=3)
+# moves[mvi++] = mvScale(rate, lambda=0.1,  weight=3)
+# moves[mvi++] = mvScale(rate, lambda=1.0,  weight=3)
+
+# seq ~ dnPhyloCTMC(tree=fbd_tree, Q=Q, branchRates=rate, type="Standard")
+# seq.clamp(data)
+
+mymodel = model(fbd_tree)
+
+mni = 1
+
+# Create a vector of monitors #
+monitors[mni++] = mnModel(filename="rb.log", printgen=10)
+
+# Initialize the MCMC object #
+mymcmc = mcmc(mymodel, monitors, moves, moveschedule="random")
+
+# Run the MCMC #
+mymcmc.run(generations=10000)
+
+# Quit RevBayes #
+q()

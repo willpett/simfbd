@@ -1,0 +1,15 @@
+tree = readTrees("fbd.tre")[1]
+	
+pi_prior <- v(1,1) 
+pi ~ dnDirichlet(pi_prior)
+
+# Create a deterministic variable for the rate matrix
+Q := fnFreeBinary(transition_rates=pi, rescaled=true)
+
+seq ~ dnPhyloCTMC(tree=tree, Q=Q, type="Standard", nSites=1000, complete=TRUE)
+
+writeNexus("asym.nex", seq)
+
+clear(seq)
+
+q()
