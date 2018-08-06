@@ -1,4 +1,4 @@
-taxa <- readTaxonData("fbd.taxa")
+taxa <- readTaxonData("diagnosed.taxa")
 #data <- readDiscreteCharacterData("asym.nex")
 
 mvi = 1

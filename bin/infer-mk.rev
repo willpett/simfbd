@@ -1,5 +1,5 @@
-taxa <- readTaxonData("fbd.taxa")
-data <- readDiscreteCharacterData("asym.nex")
+taxa <- readTaxonData("diagnosed.taxa")
+data <- readDiscreteCharacterData("diagnosed.nex")
 
 mvi = 1
 
@@ -58,7 +58,7 @@ moves[mvi++] = mvSimplexElementScale(pi, alpha=10.0, weight=5.0)
 # Create a deterministic variable for the rate matrix
 Q := fnFreeBinary(transition_rates=pi, rescaled=true)
 
-rate ~ dnUniform(0,100)
+rate ~ dnUniform(0,1)
 
 moves[mvi++] = mvScale(rate, lambda=0.01, weight=3)
 moves[mvi++] = mvScale(rate, lambda=0.1,  weight=3)

@@ -1,0 +1,18 @@
+tree = readTrees("sa.tre")[1]
+	
+pi_prior <- v(1,1) 
+pi ~ dnDirichlet(pi_prior)
+
+# Create a deterministic variable for the rate matrix
+Q := fnFreeBinary(transition_rates=pi, rescaled=true)
+
+rate ~ dnUnif(0.000001,0.1)
+
+write(rate,filename="params.mk",append=TRUE)
+write("\t",filename="params.mk",append=TRUE)
+
+seq ~ dnPhyloCTMC(tree=tree, Q=Q, branchRates=rate, type="Standard", nSites=10000)
+
+writeFasta("mk.fa", seq)
+
+q()
