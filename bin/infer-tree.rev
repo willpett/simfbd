@@ -38,6 +38,7 @@ mni = 1
 
 # Create a vector of monitors #
 monitors[mni++] = mnModel(filename="rb.log", printgen=10)
+monitors[mni++] = mnFile(filename="rb.trees", printgen=10, fbd_tree)
 
 # Initialize the MCMC object #
 mymcmc = mcmc(mymodel, monitors, moves, moveschedule="random")
