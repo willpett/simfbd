@@ -16,13 +16,15 @@ if(inf.type == "mk")
 }
 names(sim) = names.sim
 
+l = min(length(true$lambda),length(sim$lambda))
+
 if(sim.type == "mk")
 {
 	mk = read.table("params.mk")
 	names(mk) = c("rate","n")
+	l = min(l,length(mk$rate))
+	mk = mk[1:l,]
 }
-
-l = min(length(true$lambda),length(sim$lambda))
 
 true = true[1:l,]
 sim = sim[1:l,]
