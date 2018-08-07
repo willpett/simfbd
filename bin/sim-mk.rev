@@ -6,12 +6,14 @@ pi ~ dnDirichlet(pi_prior)
 # Create a deterministic variable for the rate matrix
 Q := fnFreeBinary(transition_rates=pi, rescaled=true)
 
-rate ~ dnUnif(0.000001,0.1)
+sim = true
+
+source("../../rateprior.rev")
 
 write(rate,filename="params.mk",append=TRUE)
 write("\t",filename="params.mk",append=TRUE)
 
-seq ~ dnPhyloCTMC(tree=tree, Q=Q, branchRates=rate, type="Standard", nSites=10000)
+seq ~ dnPhyloCTMC(tree=tree, Q=Q, branchRates=rate, type="Standard", nSites=1000)
 
 writeFasta("mk.fa", seq)
 

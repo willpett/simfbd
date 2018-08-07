@@ -17,6 +17,10 @@ parser.add_option("-m", "--model", dest="model",
 parser.add_option("-t", "--tree",
                   action="store_true", dest="tree", default=False,
                   help="use the full FBD tree model")
+parser.add_option("-f", "--fixed",
+                  action="store_true", dest="fixed", default=False,
+                  help="use fixed FBD tree")
+
 
 (options, args) = parser.parse_args()
 
@@ -25,8 +29,11 @@ models = ['asym','mk','none']
 if options.model not in models:
 	raise Exception("Morphological model must be one of: "+str(models))
 
-if not os.path.isfile("params.r"):
-	raise Exception("params.r file not found")
+if options.model == "mk" and not os.path.isfile("rateprior.rev"):
+	raise Exception("rateprior.rev file not found")
+
+if (not os.path.isfile("params.r") or not os.path.isfile("prior.rev")) and not options.fixed:
+	raise Exception("params.r/prior.rev file not found")
 
 
 os.system('rm -rf sims')
@@ -41,13 +48,20 @@ def simulate(i):
 	os.system('mkdir sim'+ext)
 	os.chdir('sim'+ext)
 
-	os.system(bindir+'/simfbd.r ../../params.r')
+	if not options.fixed:
+		os.system(bindir+'/simfbd.r ../../params.r')
+	else:
+		os.system('cp ../../bd.tre ./')
+		os.system('cp ../../fbd.taxa ./')
+		os.system('cp ../../fbd.tre ./')
+		os.system('cp ../../sa.taxa ./')
+		os.system('cp ../../sa.tre ./')		
 
 	if options.model == 'asym':
 		os.system('rb '+bindir+'/sim-asym.rev')
 		os.system('cp fbd.taxa diagnosed.taxa')
 		os.system('cp asym.nex diagnosed.nex')
-	elif options.model == 'mk':
+	elif options.model == 'mk' or options.fixed:
 		os.system('rb '+bindir+'/sim-mk.rev')
 		os.system(bindir+'/diagnose.py mk.fa sa.taxa')
 	else:

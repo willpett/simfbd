@@ -3,24 +3,7 @@ data <- readDiscreteCharacterData("diagnosed.nex")
 
 mvi = 1
 
-# Define exponential priors on the birth rate and death rate #
-lambda ~ dnUnif(0,3)
-r ~ dnUnif(0,1)
-psi ~ dnUnif(0,2)
-
-mu := abs(r*lambda)
-
-moves[mvi++] = mvScale(lambda, lambda=0.01, weight=1)
-moves[mvi++] = mvScale(lambda, lambda=0.1,  weight=1)
-moves[mvi++] = mvScale(lambda, lambda=1.0,  weight=1)
-
-moves[mvi++] = mvScale(r, lambda=0.01, weight=1)
-moves[mvi++] = mvScale(r, lambda=0.1,  weight=1)
-moves[mvi++] = mvScale(r, lambda=1,    weight=1)
-
-moves[mvi++] = mvScale(psi, lambda=0.01, weight=1)
-moves[mvi++] = mvScale(psi, lambda=0.1,  weight=1)
-moves[mvi++] = mvScale(psi, lambda=1,    weight=1)
+source("../../prior.rev")
 
 rho <- 1.0
 
@@ -58,11 +41,9 @@ moves[mvi++] = mvSimplexElementScale(pi, alpha=10.0, weight=5.0)
 # Create a deterministic variable for the rate matrix
 Q := fnFreeBinary(transition_rates=pi, rescaled=true)
 
-rate ~ dnUniform(0,1)
+sim = false
 
-moves[mvi++] = mvScale(rate, lambda=0.01, weight=3)
-moves[mvi++] = mvScale(rate, lambda=0.1,  weight=3)
-moves[mvi++] = mvScale(rate, lambda=1.0,  weight=3)
+source("../../rateprior.rev")
 
 seq ~ dnPhyloCTMC(tree=fbd_tree, Q=Q, branchRates=rate, type="Standard")
 seq.clamp(data)
