@@ -66,8 +66,9 @@ with open("diagnosed.fa", "w") as output_handle:
     SeqIO.write(species.values(), output_handle, "fasta")
 
 os.system('aln2aln -from fasta -to nexus -i diagnosed.fa -o diagnosed.nex')
-os.system("sed -i '' 's/protein/restriction/' diagnosed.nex")
-os.system("sed -i '' 's/ symbols.*;/;/' diagnosed.nex")
+os.system("sed -i.'' 's/protein/restriction/' diagnosed.nex")
+os.system("sed -i.'' 's/ symbols.*;/;/' diagnosed.nex")
+os.system("rm diagnosed.nex.")
 
 with open('params.mk', 'a') as f:
     f.write(str(len(ranges))+"\n")
