@@ -1,5 +1,4 @@
 taxa <- readTaxonData("diagnosed.taxa")
-#data <- readDiscreteCharacterData("asym.nex")
 
 mvi = 1
 
@@ -25,30 +24,13 @@ moves[mvi++] = mvScale(origin_time, lambda=0.1,  weight=3)
 moves[mvi++] = mvScale(origin_time, lambda=1,    weight=3)
 
 ### Define the tree-prior distribution as the fossilized birth-death process ###
-fbd_tree ~ dnFBDRP(origin=origin_time, lambda=lambda, mu=mu, psi=psi, rho=rho, taxa=taxa, extended=true)
+fbd_tree ~ dnFBDRP(origin=origin_time, lambda=lambda, mu=mu, psi=psi, rho=rho, taxa=taxa)
 
 moves[mvi++] = mvFNPR(fbd_tree, weight=15.0)
-#moves[mvi++] = mvCollapseExpandFossilBranch(fbd_tree, origin_time, weight=6.0)
-moves[mvi++] = mvFossilTimeSlideUniform(fbd_tree, weight=20.0)
+moves[mvi++] = mvCollapseExpandFossilBranch(fbd_tree, origin_time, weight=6.0)
+#moves[mvi++] = mvFossilTimeSlideUniform(fbd_tree, weight=20.0)
 moves[mvi++] = mvNodeTimeSlideUniform(fbd_tree, weight=20.0)
 moves[mvi++] = mvRootTimeSlideUniform(fbd_tree, origin_time, weight=5.0)
-
-# pi_prior <- v(1,1) 
-# pi ~ dnDirichlet(pi_prior)
-
-# moves[mvi++] = mvSimplexElementScale(pi, alpha=10.0, weight=5.0)
-
-# # Create a deterministic variable for the rate matrix
-# Q := fnFreeBinary(transition_rates=pi, rescaled=true)
-
-# rate ~ dnUniform(0,100)
-
-# moves[mvi++] = mvScale(rate, lambda=0.01, weight=3)
-# moves[mvi++] = mvScale(rate, lambda=0.1,  weight=3)
-# moves[mvi++] = mvScale(rate, lambda=1.0,  weight=3)
-
-# seq ~ dnPhyloCTMC(tree=fbd_tree, Q=Q, branchRates=rate, type="Standard")
-# seq.clamp(data)
 
 mymodel = model(fbd_tree)
 

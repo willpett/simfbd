@@ -1,5 +1,5 @@
-tree = readTrees("fbd.tre")[1]
-	
+tree = readTrees("tree.complete.tre")[1]
+
 pi_prior <- v(1,1) 
 pi ~ dnDirichlet(pi_prior)
 
@@ -8,8 +8,11 @@ Q := fnFreeBinary(transition_rates=pi, rescaled=true)
 
 seq ~ dnPhyloCTMC(tree=tree, Q=Q, type="Standard", nSites=1000, complete=TRUE)
 
-writeNexus("asym.nex", seq)
+taxa <- readTaxonData("taxa.sa.tsv")
 
-clear(seq)
+seq.excludeTaxa(seq.taxa())
+seq.includeTaxa(taxa)
+
+writeNexus("asym.nex", seq)
 
 q()

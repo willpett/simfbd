@@ -51,21 +51,22 @@ def simulate(i):
 	if not options.fixed:
 		os.system(bindir+'/simfbd.r ../../params.r')
 	else:
-		os.system('cp ../../bd.tre ./')
-		os.system('cp ../../fbd.taxa ./')
-		os.system('cp ../../fbd.tre ./')
-		os.system('cp ../../sa.taxa ./')
-		os.system('cp ../../sa.tre ./')		
+		os.system('cp ../../tree.bd.tre ./')
+		os.system('cp ../../tree.complete.tre ./')
+		os.system('cp ../../taxa.fbd.tsv ./')
+		os.system('cp ../../tree.fbd.tre ./')
+		os.system('cp ../../taxa.sa.tsv ./')
+		os.system('cp ../../tree.sa.tre ./')		
 
 	if options.model == 'asym':
 		os.system('rb '+bindir+'/sim-asym.rev')
-		os.system('cp fbd.taxa diagnosed.taxa')
+		os.system('cp taxa.fbd.tsv diagnosed.taxa')
 		os.system('cp asym.nex diagnosed.nex')
 	elif options.model == 'mk' or options.fixed:
 		os.system('rb '+bindir+'/sim-mk.rev')
-		os.system(bindir+'/diagnose.py mk.fa sa.taxa')
+		os.system(bindir+'/diagnose.py mk.fa taxa.sa.tsv')
 	else:
-		os.system('cp fbd.taxa diagnosed.taxa')
+		os.system('cp taxa.fbd.tsv diagnosed.taxa')
 
 	if options.tree:
 		if options.model == 'none':

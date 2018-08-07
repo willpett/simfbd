@@ -2,8 +2,8 @@
 
 import sys
 
-taxfile = open("sa.taxa", "w")
-trefile = open("sa.tre", "w")
+taxfile = open("taxa.sa.tsv", "w")
+trefile = open("tree.sa.tre", "w")
 
 n = int(sys.argv[1])
 t = float(sys.argv[2])

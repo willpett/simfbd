@@ -1,4 +1,4 @@
-tree = readTrees("sa.tre")[1]
+tree = readTrees("tree.sa.tre")[1]
 	
 pi_prior <- v(1,1) 
 pi ~ dnDirichlet(pi_prior)

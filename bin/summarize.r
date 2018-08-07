@@ -1,7 +1,5 @@
 #!/usr/local/bin/Rscript
 
-#!/usr/local/bin/Rscript
-
 args = commandArgs(trailingOnly=TRUE)
 
 x = read.table("rb.log",header=TRUE)

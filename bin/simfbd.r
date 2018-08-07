@@ -64,6 +64,8 @@ sim <- function(){
   # build fbd tree
   tree <- SAtree.from.fossils(tree.bd,f)
 
+  tree.complete <<- tree
+
   fossil.tips = is.extinct(tree, tol=0.00000001)
   sa.tips = tree$tip.label[tree$edge[,2][(tree$edge[,2] %in% 1:length(tree$tip.label)) & (tree$edge.length == 0.0)]]
   unsampled.tips = fossil.tips[!(fossil.tips %in% sa.tips)]
@@ -98,7 +100,7 @@ sim <- function(){
 
     tmp <- ape::drop.tip(tmp, tmp$tip.label[!(tmp$tip.label %in% tips.fbd)])
     #print(tmp$tip.label,quote=TRUE)
-    tmp$tip.label <- sapply(strsplit(tmp$tip.label,'_'),function(x){x[1]})
+    #tmp$tip.label <- sapply(strsplit(tmp$tip.label,'_'),function(x){x[1]})
     node.ages <- n.ages(tmp)
     tmp$root.edge <- origin - max(node.ages)
   }
@@ -109,6 +111,7 @@ sim <- function(){
   x$taxon <- sapply(tips.split,function(x){x[1]})
   b <- aggregate(. ~ taxon,x,FUN=min)
   b$max <- aggregate(. ~ taxon,x,FUN=max)$max
+  b$taxon <- tips.fbd
   #print(b)
   foss.fbd <<- b
 
@@ -123,9 +126,10 @@ while(is.null(test))
   test = withTimeout( sim(), timeout=10, onTimeout="silent")
 }
 
-write(paste(params,collapse="\t"),file="params.fbd",append=TRUE)
-write.tree(tree.bd, file = "bd.tre", append=TRUE)
-write.table(foss.sa, "sa.taxa", col.names = TRUE, row.names=FALSE, quote=FALSE, sep="\t")
-write.table(foss.fbd, "fbd.taxa", col.names = TRUE, row.names=FALSE, quote=FALSE, sep="\t")
-write.tree(tree.sa, file = "sa.tre", append=TRUE)
-write.tree(tree.fbd, file = "fbd.tre", append=TRUE)
+write(paste(params,collapse="\t"),file="params.fbd")
+write.table(foss.sa, "taxa.sa.tsv", col.names = TRUE, row.names=FALSE, quote=FALSE, sep="\t")
+write.table(foss.fbd, "taxa.fbd.tsv", col.names = TRUE, row.names=FALSE, quote=FALSE, sep="\t")
+write.tree(tree.bd, file = "tree.bd.tre")
+write.tree(tree.complete, file = "tree.complete.tre")
+write.tree(tree.sa, file = "tree.sa.tre")
+write.tree(tree.fbd, file = "tree.fbd.tre")
