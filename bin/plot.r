@@ -1,10 +1,26 @@
 #!/usr/local/bin/Rscript
 
-true = read.table("params.true")
+args = commandArgs(trailingOnly=TRUE)
+
+sim.type = args[1]
+inf.type = args[2]
+
+true = read.table("params.fbd")
 sim = read.table("params.inferred")
 
 names(true) = c("n","lambda","mu","psi")
-names(sim) = c("lambda","lambda.05","lambda.median","lambda.95","mu","mu.05","mu.median","mu.95","psi","psi.05","psi.median","psi.95")
+names.sim = c("lambda","lambda.05","lambda.median","lambda.95","mu","mu.05","mu.median","mu.95","psi","psi.05","psi.median","psi.95")
+if(inf.type == "mk")
+{
+	names.sim = c(names.sim,"rate","rate.05","rate.median","rate.95")
+}
+names(sim) = names.sim
+
+if(sim.type == "mk")
+{
+	mk = read.table("params.mk")
+	names(mk) = c("rate","n")
+}
 
 l = min(length(true$lambda),length(sim$lambda))
 
@@ -30,4 +46,24 @@ plot(true$mu, sim$mu, xlim=c(0,mu.max),ylim=c(0,mu.max), xlab="true mu",ylab="in
 abline(0,1)
 plot(true$psi, sim$psi, xlim=c(0,psi.max),ylim=c(0,psi.max), xlab="true psi",ylab="inferred psi")
 abline(0,1)
+
+if(inf.type == "mk")
+{
+	if(sim.type == "mk")
+	{
+		rate.coverage = sum(mk$rate > sim$rate.05 & mk$rate < sim$rate.95)/l
+		print(rate.coverage)
+
+		rate.max = max(c(mk$rate,sim$rate))
+		plot(mk$rate, sim$rate, xlim=c(0,rate.max),ylim=c(0,rate.max), xlab="true rate",ylab="inferred rate")
+		abline(0,1)
+	}
+	else
+	{
+		rate.max = max(c(true$lambda,sim$rate*1000))
+		plot(true$lambda, sim$rate*1000, xlim=c(0,rate.max),ylim=c(0,rate.max), xlab="true lambda",ylab="inferred rate")
+		abline(0,1)
+	}
+}
+
 dev.off()
