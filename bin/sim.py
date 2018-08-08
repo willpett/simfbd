@@ -84,10 +84,7 @@ def simulate(i):
 	else:
 		os.system('rb '+bindir+'/infer-range.rev')
 
-	summ = bindir+'/summarize.r'
-	if re.search('mk',options.infer):
-		summ += ' 1'
-	os.system(summ)
+	os.system(bindir+'/summarize.r '+options.infer)
 
 pool = mp.Pool(processes=int(options.k))
 

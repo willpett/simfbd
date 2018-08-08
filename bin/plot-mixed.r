@@ -34,6 +34,10 @@ if(inf.type == "mk")
 {
 	names.sim = c(names.sim,"rate","rate.05","rate.median","rate.95")
 }
+if(inf.type == "mixed")
+{
+        names.sim = c(names.sim,"lambda_a","lambda_a.05","lambda_a.median","lambda_a.95")
+}
 names(sim) = names.sim
 
 l = min(length(true$lambda),length(sim$lambda))
@@ -69,7 +73,11 @@ abline(0,1)
 plot(true$psi, sim$psi, xlim=c(0,psi.max),ylim=c(0,psi.max), xlab="true psi",ylab="inferred psi")
 abline(0,1)
 
-if(inf.type == "mk")
+if(inf.type == "mixed")
+{
+	lambda_a.max = max(c(true$rate,sim$lambda_a))
+	plot(mk$rate, sim$lambda_a,ylim=c(0,10),xlab="morphological rate",ylab="inferred lambda_a")
+} else if(inf.type == "mk")
 {
 	if(sim.type == "mk")
 	{
@@ -83,15 +91,8 @@ if(inf.type == "mk")
 	else
 	{
 		rate.max = max(c(true$lambda,sim$rate*1000))
-                plot(true$lambda, sim$rate*1000, xlim=c(0,rate.max),ylim=c(0,rate.max), xlab="true lambda",ylab="inferred rate")
-                abline(0,1)
-
-		rate.max = max(c(sim$lambda,sim$rate*1000))
-		plot(sim$lambda, sim$rate*1000, xlim=c(0,rate.max),ylim=c(0,rate.max), xlab="inferred lambda",ylab="inferred rate")
+		plot(true$lambda, sim$rate*1000, xlim=c(0,rate.max),ylim=c(0,rate.max), xlab="true lambda",ylab="inferred rate")
 		abline(0,1)
-
-                hist(sim$lambda/sim$rate,prob=T,breaks=20,xlab="lambda/rate",main="",ylab="")
-                abline(v=1000,col="red",lwd=2)
 	}
 }
 
