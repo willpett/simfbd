@@ -1,9 +1,29 @@
 #!/usr/local/bin/Rscript
 
+if(length(suppressWarnings(system('find sims -type f | grep inferred',intern=T))) == 0)
+{
+	cat("no completed simulations\n")
+	quit()
+}
+
 args = commandArgs(trailingOnly=TRUE)
 
 sim.type = args[1]
 inf.type = args[2]
+
+cat <- function(x)
+{
+	r = paste('find sims -type f | grep inferred | xargs dirname | awk \'{print $1"/',x,'"}\' | xargs cat > ',x,collapse="",sep="")
+	return(r)
+}
+
+system(cat("params.fbd"))
+system(cat("params.inferred"))
+
+if(sim.type == "mk")
+{
+	system(cat("params.mk"))
+}
 
 true = read.table("params.fbd")
 sim = read.table("params.inferred")

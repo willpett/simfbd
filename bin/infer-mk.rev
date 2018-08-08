@@ -18,7 +18,7 @@ for(i in 1:taxa.size())
 	}
 }
 
-origin_time ~ dnUniform(maxage,maxage+4)
+origin_time ~ dnUniform(maxage,maxage*2)
 
 moves[mvi++] = mvScale(origin_time, lambda=0.01, weight=3)
 moves[mvi++] = mvScale(origin_time, lambda=0.1,  weight=3)
