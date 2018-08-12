@@ -1,0 +1,35 @@
+taxa <- readTaxonData("taxa.fbd.tsv")
+tree <- readTrees("tree.fbd.tre")[1]
+
+for(i in 1:taxa.size())
+{
+    if(taxa[i].getAge() > 0.0)
+    {
+         taxa[i] <- taxon(taxa[i].getName(),min=tree.nodeAge(tree.tipIndex(taxa[i])),max=max(v(tree.nodeAge(tree.tipIndex(taxa[i])),taxa[i].getMaxAge())))
+    }
+}
+
+mvi = 1
+
+source("../../prior.rev")
+
+origin_time <- tree.rootAge() + tree.branchLength(tree.nnodes())
+
+fbd_tree ~ dnFBDRP(origin=origin_time, lambda=lambda, mu=mu, psi=psi, rho=1.0, taxa=taxa)
+fbd_tree.setValue(tree)
+
+mymodel = model(fbd_tree)
+
+mni = 1
+
+# Create a vector of monitors #
+monitors[mni++] = mnModel(filename="rb.log", printgen=10)
+
+# Initialize the MCMC object #
+mymcmc = mcmc(mymodel, monitors, moves, moveschedule="random")
+
+# Run the MCMC #
+mymcmc.run(generations=10000)
+
+# Quit RevBayes #
+q()

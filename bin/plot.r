@@ -11,18 +11,18 @@ args = commandArgs(trailingOnly=TRUE)
 sim.type = args[1]
 inf.type = args[2]
 
-cat <- function(x)
+catcmd <- function(x)
 {
 	r = paste('find sims -type f | grep inferred | xargs dirname | awk \'{print $1"/',x,'"}\' | xargs cat > ',x,collapse="",sep="")
 	return(r)
 }
 
-system(cat("params.fbd"))
-system(cat("params.inferred"))
+system(catcmd("params.fbd"))
+system(catcmd("params.inferred"))
 
 if(sim.type == "mk")
 {
-	system(cat("params.mk"))
+	system(catcmd("params.mk"))
 }
 
 true = read.table("params.fbd")
@@ -30,7 +30,7 @@ sim = read.table("params.inferred")
 
 names(true) = c("n","lambda","mu","psi")
 names.sim = c("lambda","lambda.05","lambda.median","lambda.95","mu","mu.05","mu.median","mu.95","psi","psi.05","psi.median","psi.95")
-if(inf.type == "mk")
+if(inf.type == "mk" || inf.type == "mk-fixed")
 {
 	names.sim = c(names.sim,"rate","rate.05","rate.median","rate.95")
 }
@@ -53,9 +53,9 @@ lambda.coverage = sum(true$lambda > sim$lambda.05 & true$lambda < sim$lambda.95)
 mu.coverage = sum(true$mu > sim$mu.05 & true$mu < sim$mu.95)/l
 psi.coverage = sum(true$psi > sim$psi.05 & true$psi < sim$psi.95)/l
 
-print(lambda.coverage)
-print(mu.coverage)
-print(psi.coverage)
+cat("lambda\t",lambda.coverage,"\n")
+cat("mu\t",mu.coverage,"\n")
+cat("psi\t",psi.coverage,"\n")
 
 lambda.max = max(c(true$lambda,sim$lambda))
 mu.max = max(c(true$mu,sim$mu))
@@ -69,12 +69,12 @@ abline(0,1)
 plot(true$psi, sim$psi, xlim=c(0,psi.max),ylim=c(0,psi.max), xlab="true psi",ylab="inferred psi")
 abline(0,1)
 
-if(inf.type == "mk")
+if(inf.type == "mk" || inf.type == "mk-fixed")
 {
 	if(sim.type == "mk")
 	{
 		rate.coverage = sum(mk$rate > sim$rate.05 & mk$rate < sim$rate.95)/l
-		print(rate.coverage)
+		cat("rate\t",rate.coverage,"\n")
 
 		rate.max = max(c(mk$rate,sim$rate))
 		plot(mk$rate, sim$rate, xlim=c(0,rate.max),ylim=c(0,rate.max), xlab="true rate",ylab="inferred rate")
@@ -95,4 +95,4 @@ if(inf.type == "mk")
 	}
 }
 
-dev.off()
+garbage <- dev.off()

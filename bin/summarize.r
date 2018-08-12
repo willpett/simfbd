@@ -10,7 +10,7 @@ params = c( mean(x$lambda), quantile(x$lambda, c(0.05, 0.5, 0.95) ), mean(x$mu),
 
 if(length(args))
 {
-	if(args[1] == "mk" || args[1] == "mk-mixed")
+	if(args[1] == "mk" || args[1] == "mk-mixed" || args[1] == "mk-fixed")
 	{
 		params = c(params, mean(x$rate), quantile(x$rate, c(0.05, 0.5, 0.95) ) )
 	}
