@@ -75,7 +75,9 @@ def simulate(i):
 	elif options.infer == 'mk-fixed':
 		os.system('rb '+bindir+'/infer-mk-fixed.rev')
 	elif options.infer == 'mk-mixed':
-                os.system('rb '+bindir+'/infer-mk-mixed.rev')
+		os.system('rb '+bindir+'/infer-mk-mixed.rev')
+	elif options.infer == 'msp-fixed':
+		os.system('rb '+bindir+'/infer-msp-fixed.rev')
 	elif options.infer == 'tree':
 		os.system('rb '+bindir+'/infer-tree.rev')
 	elif options.infer == 'tree-mixed':

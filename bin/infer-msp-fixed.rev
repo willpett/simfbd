@@ -55,7 +55,7 @@ sim = false
 
 source("../../rateprior.rev")
 
-seq ~ dnPhyloCTMC(tree=fbd_tree, Q=Q, branchRates=rate, type="Standard")
+seq ~ dnPhyloCTMC(tree=fbd_tree, Q=Q, branchRates=rate, type="Standard", morphospecies=true)
 seq.clamp(data)
 
 mymodel = model(fbd_tree)
