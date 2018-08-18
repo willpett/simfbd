@@ -61,12 +61,14 @@ lambda.max = max(c(true$lambda,sim$lambda))
 mu.max = max(c(true$mu,sim$mu))
 psi.max = max(c(true$psi,sim$psi))
 
+al = 1.5
+
 pdf("sim.pdf")
-plot(true$lambda, sim$lambda, xlim=c(0,lambda.max),ylim=c(0,lambda.max),xlab="true lambda", ylab="inferred lambda")
+plot(true$lambda, sim$lambda, cex.axis=al, xlim=c(0,lambda.max),ylim=c(0,lambda.max),xlab=expression(paste("true ", lambda)), ylab=expression(paste("inferred ", lambda)))
 abline(0,1)
-plot(true$mu, sim$mu, xlim=c(0,mu.max),ylim=c(0,mu.max), xlab="true mu",ylab="inferred mu")
+plot(true$mu, sim$mu, cex.axis=al, xlim=c(0,mu.max),ylim=c(0,mu.max), xlab=expression(paste("true ", mu)),ylab=expression(paste("inferred ", mu)))
 abline(0,1)
-plot(true$psi, sim$psi, xlim=c(0,psi.max),ylim=c(0,psi.max), xlab="true psi",ylab="inferred psi")
+plot(true$psi, sim$psi, cex.axis=al, xlim=c(0,psi.max),ylim=c(0,psi.max), xlab=expression(paste("true ", psi)),ylab=expression(paste("inferred ", psi)))
 abline(0,1)
 
 if(inf.type == "mk" || inf.type == "mk-fixed" || inf.type == "msp-fixed")
@@ -77,20 +79,20 @@ if(inf.type == "mk" || inf.type == "mk-fixed" || inf.type == "msp-fixed")
 		cat("rate\t",rate.coverage,"\n")
 
 		rate.max = max(c(mk$rate,sim$rate))
-		plot(mk$rate, sim$rate, xlim=c(0,rate.max),ylim=c(0,rate.max), xlab="true rate",ylab="inferred rate")
+		plot(mk$rate, sim$rate, cex.axis=al, xlim=c(0,rate.max),ylim=c(0,rate.max), xlab="true morphological substitution rate",ylab="inferred morphological substitution rate")
 		abline(0,1)
 	}
 	else
 	{
 		rate.max = max(c(true$lambda,sim$rate*1000))
-                plot(true$lambda, sim$rate*1000, xlim=c(0,rate.max),ylim=c(0,rate.max), xlab="true lambda",ylab="inferred rate")
+                plot(true$lambda, sim$rate*1000, cex.axis=al, xlim=c(0,rate.max),ylim=c(0,rate.max), xlab=expression(paste("true ", lambda)),ylab="inferred morphological substitution rate")
                 abline(0,1)
 
 		rate.max = max(c(sim$lambda,sim$rate*1000))
-		plot(sim$lambda, sim$rate*1000, xlim=c(0,rate.max),ylim=c(0,rate.max), xlab="inferred lambda",ylab="inferred rate")
+		plot(sim$lambda, sim$rate*1000, cex.axis=al, xlim=c(0,rate.max),ylim=c(0,rate.max), xlab=expression(paste("inferred ", lambda)),ylab="inferred morphological substitution rate")
 		abline(0,1)
 
-                hist(sim$lambda/sim$rate,prob=T,breaks=20,xlab="lambda/rate",main="",ylab="")
+                hist(sim$lambda/sim$rate,prob=T,breaks=20,cex.axis=al, xlab=expression(paste(lambda, "/rate")),main="",ylab="")
                 abline(v=1000,col="red",lwd=2)
 	}
 }
