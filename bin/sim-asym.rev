@@ -8,7 +8,7 @@ Q := fnFreeBinary(transition_rates=pi, rescaled=true)
 
 seq ~ dnPhyloCTMC(tree=tree, Q=Q, type="Standard", nSites=1000, complete=TRUE)
 
-taxa <- readTaxonData("taxa.sa.tsv")
+taxa <- readTaxonData("taxa.fbd.tsv")
 
 seq.excludeTaxa(seq.taxa())
 seq.includeTaxa(taxa)

@@ -84,6 +84,7 @@ sim <- function(){
   foss.sa <<- x
 
   #print(tmp$tip.label,quote=TRUE)
+  tips.fbd <- tmp$tip.label
   tips.split <- strsplit(tmp$tip.label,'_')
   if(length(tips.split[[1]]) == 2)
   {

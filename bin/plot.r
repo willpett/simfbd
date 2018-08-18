@@ -30,7 +30,7 @@ sim = read.table("params.inferred")
 
 names(true) = c("n","lambda","mu","psi")
 names.sim = c("lambda","lambda.05","lambda.median","lambda.95","mu","mu.05","mu.median","mu.95","psi","psi.05","psi.median","psi.95")
-if(inf.type == "mk" || inf.type == "mk-fixed")
+if(inf.type == "mk" || inf.type == "mk-fixed" || inf.type == "msp-fixed")
 {
 	names.sim = c(names.sim,"rate","rate.05","rate.median","rate.95")
 }
@@ -69,7 +69,7 @@ abline(0,1)
 plot(true$psi, sim$psi, xlim=c(0,psi.max),ylim=c(0,psi.max), xlab="true psi",ylab="inferred psi")
 abline(0,1)
 
-if(inf.type == "mk" || inf.type == "mk-fixed")
+if(inf.type == "mk" || inf.type == "mk-fixed" || inf.type == "msp-fixed")
 {
 	if(sim.type == "mk")
 	{
