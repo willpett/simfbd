@@ -86,6 +86,12 @@ def simulate(i):
 		os.system('rb '+bindir+'/infer-tree-fixed.rev')
 	elif options.infer == 'tree-specimen':
 		os.system('rb '+bindir+'/infer-tree-specimen.rev')
+	elif options.infer == 'extended-sampled':
+		os.system('rb '+bindir+'/infer-tree-extended.rev')
+		os.system(bindir+'/summarize.r '+options.infer+' rb-extended.log')
+		os.system('rb '+bindir+'/infer-tree-sampled.rev')
+		os.system(bindir+'/summarize.r '+options.infer+' rb-sampled.log')
+		return
 	else:
 		os.system('rb '+bindir+'/infer-range.rev')
 

@@ -2,7 +2,14 @@
 
 args = commandArgs(trailingOnly=TRUE)
 
-x = read.table("rb.log",header=TRUE)
+filename = "rb.log"
+
+if ( length(args) > 1 )
+{
+	filename <- args[2]
+}
+
+x = read.table(filename,header=TRUE)
 
 x = x[-(1:500),]
 
@@ -20,4 +27,11 @@ if(length(args))
 	}
 }
 
-write(params,file="params.inferred", append=FALSE, sep="\t", ncolumns=length(params))
+outfile = "params.inferred"
+
+if ( length(args) > 1 )
+{
+	outfile = gsub(".log", ".inferred", args[2])
+}
+
+write(params,file=outfile, append=FALSE, sep="\t", ncolumns=length(params))
