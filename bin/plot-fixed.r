@@ -53,16 +53,16 @@ xlims = c(0.0001,0.025)
 al = 1.5
 
 pdf("sim.pdf")
-plot(mk$rate, sim$lambda,log="xy", xlab="true morphological substitution rate", ylab=expression(paste("inferred ", lambda)), cex.axis = al)
+plot(mk$rate, sim$lambda,log="xy", xlab="true morphological substitution rate", ylab=expression(paste("inferred ", lambda)), cex.lab = al)
 abline(h=1/3,col="red")
-plot(mk$rate, sim$mu,log="xy", xlab="true morphological substitution rate",ylab=expression(paste("inferred ", mu)),cex.axis = al)
+plot(mk$rate, sim$mu,log="xy", xlab="true morphological substitution rate",ylab=expression(paste("inferred ", mu)),cex.lab = al)
 abline(h=1/10,col="red")
-plot(mk$rate, sim$psi,log="xy", xlab="true morphological substitution rate",ylab=expression(paste("inferred ", psi)),cex.axis = al)
+plot(mk$rate, sim$psi,log="xy", xlab="true morphological substitution rate",ylab=expression(paste("inferred ", psi)),cex.lab = al)
 abline(h=1/2,col="red")
-plot(mk$rate, mk$n,log="xy", xlab="true morphological substitution rate",ylab="# diagnosed species",cex.axis = al)
+plot(mk$rate, mk$n,log="xy", xlab="true morphological substitution rate",ylab="# diagnosed species",cex.lab = al)
 if(inf.type == "mk")
 {
-	plot(mk$rate, sim$rate, xlab="true morphological substitution rate",ylab="inferred morphological substitution rate",cex.axis = al)
+	plot(mk$rate, sim$rate, xlab="true morphological substitution rate",ylab="inferred morphological substitution rate",cex.lab = al)
 	abline(0,1)
 }
 dev.off()
