@@ -37,14 +37,14 @@ mymodel = model(fbd_tree)
 mni = 1
 
 # Create a vector of monitors #
-monitors[mni++] = mnModel(filename="rb-sampled.log", printgen=10)
+monitors[mni++] = mnModel(filename="rb-sampled.log", printgen=100)
 #monitors[mni++] = mnFile(filename="rb.trees", printgen=10, fbd_tree)
 
 # Initialize the MCMC object #
 mymcmc = mcmc(mymodel, monitors, moves, moveschedule="random")
 
 # Run the MCMC #
-mymcmc.run(generations=10000)
+mymcmc.run(generations=100000)
 
 # Quit RevBayes #
 q()
