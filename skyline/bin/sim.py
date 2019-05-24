@@ -26,7 +26,6 @@ bindir = os.path.dirname(os.path.abspath(__file__))
 simdir = os.path.abspath(os.getcwd())
 
 def simulate(i):
-	print(simdir)
 	os.chdir(simdir+'/sims')
 	ext = ("%0"+str(len(options.n))+"d") % (i + 1)
 	os.system('mkdir sim'+ext)
