@@ -35,7 +35,7 @@ def simulate(i):
 
 	os.system('rb '+bindir+'/infer-range.rev')
 
-	os.system(bindir+'/summarize.r '+options.infer)
+	#os.system(bindir+'/summarize.r '+options.infer)
 
 def main():
 	pool = mp.Pool(processes=int(options.k))
