@@ -1,14 +1,19 @@
+# hyperprior for variance-covariance matrix
+sigma_0 <- 0.1
+
+# number of time intervals
 n <- 10
+
+# total time
 t <- 1
+
+# estimated sigma
+sigma ~ dnInverseWishart(diagonal=[sigma_0, sigma_0, sigma_0], df=3)
+
 
 dt <- t/n
 
 timeline <- seq(dt,t,dt)
-
-sigma_0 <- 0.1
-
-# estimated sigma
-sigma ~ dnInverseWishart(diagonal=[sigma_0, sigma_0, sigma_0], df=3)
 
 moves.append( mvConjugateInverseWishart(sigma) )
 
