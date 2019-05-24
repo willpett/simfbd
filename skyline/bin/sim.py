@@ -8,10 +8,25 @@ import re
 
 from optparse import OptionParser
 
-if __name__ == "__main__":
-    main()
+parser = OptionParser()
+parser.add_option("-n", "--nreps", dest="n",
+                  help="number of replicates", metavar="N")
+parser.add_option("-k", "--ncpu", dest="k",
+                  help="number of cpus", metavar="K")
+
+(options, args) = parser.parse_args()
+
+if (not os.path.isfile("params.r") or not os.path.isfile("prior.rev")) and not options.fixed:
+	raise Exception("params.r/prior.rev file not found")
+
+os.system('rm -rf sims')
+os.system('mkdir sims')
+
+bindir = os.path.dirname(os.path.abspath(__file__))
+simdir = os.path.abspath(os.getcwd())
 
 def simulate(i):
+	print(simdir)
 	os.chdir(simdir+'/sims')
 	ext = ("%0"+str(len(options.n))+"d") % (i + 1)
 	os.system('mkdir sim'+ext)
@@ -24,23 +39,6 @@ def simulate(i):
 	os.system(bindir+'/summarize.r '+options.infer)
 
 def main():
-	parser = OptionParser()
-	parser.add_option("-n", "--nreps", dest="n",
-	                  help="number of replicates", metavar="N")
-	parser.add_option("-k", "--ncpu", dest="k",
-	                  help="number of cpus", metavar="K")
-
-	(options, args) = parser.parse_args()
-
-	if (not os.path.isfile("params.r") or not os.path.isfile("prior.rev")) and not options.fixed:
-		raise Exception("params.r/prior.rev file not found")
-
-	os.system('rm -rf sims')
-	os.system('mkdir sims')
-
-	bindir = os.path.dirname(os.path.abspath(__file__))
-	simdir = os.path.abspath(os.getcwd())
-
 	pool = mp.Pool(processes=int(options.k))
 
 	for i in range(int(options.n)):
@@ -48,3 +46,6 @@ def main():
 
 	pool.close()
 	pool.join()
+
+if __name__ == "__main__":
+    main()
