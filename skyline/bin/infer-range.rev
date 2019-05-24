@@ -1,0 +1,34 @@
+taxa <- readTaxonData("taxa.fbd.tsv")
+
+moves = VectorMoves()
+
+source("../../prior.rev")
+
+rho <- 1.0
+
+### Define the tree-prior distribution as the fossilized birth-death process ###
+bd ~ dnFBDRMatrix(lambda=lambda, mu=mu, psi=psi, rho=rho, taxa=taxa, timeline=timeline)
+
+moves.append( mvMatrixElementScale(bd, lambda = 0.01, weight=taxa.size()) )
+moves.append( mvMatrixElementScale(bd, lambda = 0.1, weight=taxa.size()) )
+moves.append( mvMatrixElementScale(bd, lambda = 1, weight=taxa.size()) )
+
+moves.append( mvMatrixElementSlide(bd, delta = 0.01, weight=taxa.size()) )
+moves.append( mvMatrixElementSlide(bd, delta = 0.1, weight=taxa.size()) )
+moves.append( mvMatrixElementSlide(bd, delta = 1, weight=taxa.size()) )
+
+mymodel = model(bd)
+
+monitors = VectorMonitors()
+
+# Create a vector of monitors #
+monitors.append( mnModel(filename="rb.log", printgen=10) )
+
+# Initialize the MCMC object #
+mymcmc = mcmc(mymodel, monitors, moves, moveschedule="random")
+
+# Run the MCMC #
+mymcmc.run(generations=10000)
+
+# Quit RevBayes #
+q()

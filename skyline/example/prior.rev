@@ -1,0 +1,33 @@
+n <- 10
+t <- 1
+
+dt <- t/n
+
+timeline <- seq(dt,t,dt)
+
+sigma_0 <- 0.1
+
+# estimated sigma
+sigma ~ dnInverseWishart(diagonal=[sigma_0, sigma_0, sigma_0], df=3)
+
+moves.append( mvConjugateInverseWishart(sigma) )
+
+x[1] ~ dnMultivariateNormal([0.0, 0.0, 0.0], sigma)
+
+moves.append( mvVectorSingleElementSlide(x[1], weight=10) )
+
+lambda[1] := exp( x[1][1] )
+mu[1] := exp( x[1][2] )
+psi[1] := exp( x[1][3] )
+
+# specify FBDR model parameters -> youngest interval = 1
+for(i in 1:n){
+
+	x[i+1] ~ dnMultivariateNormal(x[i], sigma, dt)
+
+    lambda[i+1] := (exp( x[i+1][1] ) + exp( x[i][1] ) )/ dt
+    mu[i+1] := (exp( x[i+1][2] ) + exp( x[i][2] ) )/ dt
+    psi[i+1] := (exp( x[i+1][3] ) + exp( x[i][3] ) )/ dt
+
+  	moves.append( mvVectorSingleElementSlide(x[i+1], weight=10) )
+} 
