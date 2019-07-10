@@ -6,6 +6,7 @@ suppressWarnings(suppressMessages(library(TreeSim)))
 suppressWarnings(suppressMessages(library(FossilSim)))
 suppressWarnings(suppressMessages(library(ape)))
 suppressWarnings(suppressMessages(library(R.utils)))
+suppressWarnings(suppressMessages(library(MCMCpack)))
 
 params.file = args[1]
 
