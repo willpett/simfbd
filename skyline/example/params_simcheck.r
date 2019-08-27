@@ -1,13 +1,17 @@
 suppressWarnings(suppressMessages(library(MCMCpack)))
 
 # hyperprior for variance-covariance matrix
-sigma_0 <- 0.1
+
+##We will to edit sigma and related things we will use the sigma_0 variable found in simfbd_edited
+sigma_0 <- 1e-03
+
 
 # number of time intervals
 n <- 10
 
 # total time
-t <- 0.5
+##We will to edit sigma and related things we will use the sigma_0 variable found in simfbd_edited
+#t <- 1
 
 
 sigma <- riwish(3, matrix(c(sigma_0,0,0,0,sigma_0,0,0,0,sigma_0),3,3))
@@ -24,8 +28,6 @@ psi <- numeric(n+1)
 
 x_0 <- mvrnorm(1,m,sigma)
 
-
-
 for(i in 1:length(times))
 {
 	x_i <- mvrnorm(1,x_0,sigma*t/n)
@@ -41,4 +43,4 @@ for(i in 1:length(times))
 #points(times,mu,col="blue")
 #points(times,psi,col="red")
 
-ntaxa <- 50
+ntaxa <- 10
