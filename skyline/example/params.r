@@ -1,18 +1,18 @@
 suppressWarnings(suppressMessages(library(MCMCpack)))
 
 # hyperprior for variance-covariance matrix
-sigma_0 <- 0.1
+sigma_0 <- 0.01
 
 # number of time intervals
 n <- 10
 
 # total time
-t <- 0.5
+t <- 1
 
 
 sigma <- riwish(3, matrix(c(sigma_0,0,0,0,sigma_0,0,0,0,sigma_0),3,3))
 # sigma <- matrix(c(sigma_0,0,0,0,sigma_0,0,0,0,sigma_0),3,3) 
-m <- c(0,0,0)
+m <- c(1.73398,1.14459,0)
 
 dt <- t/n
 

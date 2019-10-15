@@ -7,7 +7,7 @@ source("../../prior.rev")
 rho <- 1.0
 
 ### Define the tree-prior distribution as the fossilized birth-death process ###
-bd ~ dnFBDRMatrix(lambda=lambda, mu=mu, psi=psi, rho=rho, taxa=taxa, timeline=timeline)
+bd ~ dnFBDRMatrix(lambda=abs(lambda), mu=abs(mu), psi=abs(psi), rho=rho, taxa=taxa, timeline=timeline)
 
 moves.append( mvMatrixElementScale(bd, lambda = 0.01, weight=taxa.size()) )
 moves.append( mvMatrixElementScale(bd, lambda = 0.1, weight=taxa.size()) )
@@ -28,7 +28,7 @@ monitors.append( mnModel(filename="rb.log", printgen=10) )
 mymcmc = mcmc(mymodel, monitors, moves, moveschedule="random")
 
 # Run the MCMC #
-mymcmc.run(generations=10000)
+mymcmc.run(generations=20000)
 
 # Quit RevBayes #
 q()
