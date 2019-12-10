@@ -8,6 +8,8 @@ suppressWarnings(suppressMessages(library(ape)))
 suppressWarnings(suppressMessages(library(R.utils)))
 suppressWarnings(suppressMessages(library(MCMCpack)))
 
+suppressWarnings(suppressMessages(library(phytools)))
+
 params.file = args[1]
 
 n.ages<-function(tree){
@@ -51,10 +53,11 @@ sim <- function(){
   # params = c(ntaxa, lambda, mu, psi)
   source(params.file)
   
-  tree.bd <<- sim.bdsky.stt(n=0,                  sampprobsky = rep(0,length(lambda)),rho=1,
+  tree.bd <<- sim.bdsky.stt(n=0,                  sampprobsky = rep(1,length(lambda)),rho=1,
                             lambdasky =lambda,      deathsky = mu,
                             timesky = times,        timestop = t  )[[1]]
-  
+  n_extant<<-length(getExtant(tree.bd))
+  n_extinct<<-length(tree.bd$tip.label)-n_extant
   
   
   if(!class(tree.bd)=="phylo"){
@@ -130,14 +133,17 @@ sim <- function(){
 
 test = NULL
 
-while(is.null(test) || test=="stopped")
+while(is.null(test) || test=="stopped" || test=="errored")
 {
-
-  # simulate bd tree
-  test = withTimeout( sim(), timeout=10, onTimeout="silent")
+  test=tryCatch({
+    withTimeout( sim(), timeout=5, onTimeout="silent") 
+  }, error=function(cond){
+    print(cond)
+    return("errored")
+  })
 }
 
-write(paste(ntaxa,collapse="\t"),file="params.fbd")
+write(paste(c(n_extant,n_extinct),collapse="\t"),file="params.fbd")
 write(paste(sigma,collapse="\t"),file="params.fbd",append=TRUE)
 write(paste(lambda,collapse="\t"),file="params.fbd",append=TRUE)
 write(paste(mu,collapse="\t"),file="params.fbd",append=TRUE)
