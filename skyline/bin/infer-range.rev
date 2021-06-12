@@ -1,34 +1,40 @@
-taxa <- readTaxonData("taxa.fbd.tsv")
+taxa <- readTaxonData("taxa.tsv")
+k <- readCharacterDataDelimited(file = "fossils.tsv", header = true)
 
 moves = VectorMoves()
 
 source("../../prior.rev")
 
-rho <- 1.0
+rho <- 1
 
 ### Define the tree-prior distribution as the fossilized birth-death process ###
-bd ~ dnFBDRMatrix(lambda=abs(lambda), mu=abs(mu), psi=abs(psi), rho=rho, taxa=taxa, timeline=timeline)
+bd ~ dnFBDRMatrix(taxa=taxa, lambda=lambda, mu=mu, psi=psi, rho=rho, timeline=timeline, uncertainty="custom", k=k)
 
-moves.append( mvMatrixElementScale(bd, lambda = 0.01, weight=taxa.size()) )
-moves.append( mvMatrixElementScale(bd, lambda = 0.1, weight=taxa.size()) )
-moves.append( mvMatrixElementScale(bd, lambda = 1, weight=taxa.size()) )
+factor = 10
 
-moves.append( mvMatrixElementSlide(bd, delta = 0.01, weight=taxa.size()) )
-moves.append( mvMatrixElementSlide(bd, delta = 0.1, weight=taxa.size()) )
-moves.append( mvMatrixElementSlide(bd, delta = 1, weight=taxa.size()) )
+moves.append( mvMatrixElementScale(bd, lambda = 0.01, weight=taxa.size()/factor) )
+moves.append( mvMatrixElementScale(bd, lambda = 0.1, weight=taxa.size()/factor) )
+moves.append( mvMatrixElementScale(bd, lambda = 1, weight=taxa.size()/factor) )
+
+moves.append( mvMatrixElementSlide(bd, delta = 0.01, weight=taxa.size()/factor) )
+moves.append( mvMatrixElementSlide(bd, delta = 0.1, weight=taxa.size()/factor) )
+moves.append( mvMatrixElementSlide(bd, delta = 1, weight=taxa.size()/factor) )
+
+origin_time := max(bd)
 
 mymodel = model(bd)
 
 monitors = VectorMonitors()
 
 # Create a vector of monitors #
-monitors.append( mnModel(filename="rb.log", printgen=10) )
+monitors.append( mnModel(filename="rb.log", printgen=1000) )
+monitors.append( mnScreen(lambda, mu, psi, printgen=10000) )
 
 # Initialize the MCMC object #
-mymcmc = mcmc(mymodel, monitors, moves, moveschedule="random")
+mymcmc = mcmc(mymodel, monitors, moves, moveschedule="single")
 
 # Run the MCMC #
-mymcmc.run(generations=20000)
+mymcmc.run(generations=10000000)
 
 # Quit RevBayes #
 q()

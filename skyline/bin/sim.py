@@ -1,4 +1,4 @@
-#!/usr/local/bin/python
+#!/usr/bin/python
 
 import multiprocessing as mp
 import subprocess
@@ -32,16 +32,28 @@ def simulate(i):
 	os.chdir('sim'+ext)
 
 	os.system(bindir+'/simfbd.r ../../params.r')	
+	
+def infer_rb(i):
+	os.chdir(simdir+'/sims')
+	ext = ("%0"+str(len(options.n))+"d") % (i + 1)
+	os.chdir('sim'+ext)
 
 	os.system('rb '+bindir+'/infer-range.rev')
+	
+def infer_pyrate(i):
+	os.chdir(simdir+'/sims')
+	ext = ("%0"+str(len(options.n))+"d") % (i + 1)
+	os.chdir('sim'+ext)
 
-	#os.system(bindir+'/summarize.r '+options.infer)
+	os.system('sh '+bindir+'/infer-pyrate.sh '+str(i))
 
 def main():
 	pool = mp.Pool(processes=int(options.k))
 
 	for i in range(int(options.n)):
-		pool.apply_async(simulate, args=(i,))
+		pool.apply(simulate, args=(i,))
+		pool.apply_async(infer_rb, args=(i,))
+		pool.apply_async(infer_pyrate, args=(i,))
 
 	pool.close()
 	pool.join()
