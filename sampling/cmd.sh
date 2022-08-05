@@ -1,1 +1,1 @@
-../bin/sim.py -n 1000 -k 20
+../bin/main.py -n 1000 -k 20

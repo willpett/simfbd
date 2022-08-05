@@ -31,7 +31,7 @@ def simulate(i):
 	os.system('mkdir sim'+ext)
 	os.chdir('sim'+ext)
 
-	os.system(bindir+'/simfbd.r ../../params.r')	
+	os.system(bindir+'/sim.r ../../params.r')	
 
 def infer_bds(i):
         os.chdir(simdir+'/sims')
@@ -60,7 +60,7 @@ def main():
 	for i in range(int(options.n)):
 		pool.apply(simulate, args=(i,))
 		pool.apply_async(infer_bds, args=(i,))
-		pool.apply_async(infer_rb, args=(i,))
+		pool.apply_async(infer_fbd, args=(i,))
 		pool.apply_async(infer_pyrate, args=(i,))
 
 	pool.close()
