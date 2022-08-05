@@ -32,13 +32,20 @@ def simulate(i):
 	os.chdir('sim'+ext)
 
 	os.system(bindir+'/simfbd.r ../../params.r')	
-	
-def infer_rb(i):
+
+def infer_bds(i):
+        os.chdir(simdir+'/sims')
+        ext = ("%0"+str(len(options.n))+"d") % (i + 1)
+        os.chdir('sim'+ext)
+
+        os.system('rb '+bindir+'/infer-bds.rev')
+
+def infer_fbd(i):
 	os.chdir(simdir+'/sims')
 	ext = ("%0"+str(len(options.n))+"d") % (i + 1)
 	os.chdir('sim'+ext)
 
-	os.system('rb '+bindir+'/infer-range.rev')
+	os.system('rb '+bindir+'/infer-fbd.rev')
 	
 def infer_pyrate(i):
 	os.chdir(simdir+'/sims')
@@ -52,6 +59,7 @@ def main():
 
 	for i in range(int(options.n)):
 		pool.apply(simulate, args=(i,))
+		pool.apply_async(infer_bds, args=(i,))
 		pool.apply_async(infer_rb, args=(i,))
 		pool.apply_async(infer_pyrate, args=(i,))
 
