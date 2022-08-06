@@ -1,5 +1,5 @@
 #!/bin/bash
 for i in {1..100}
 do
-   ../bin/simfbd.r params.r
+   ../bin/sim.r params.r
 done

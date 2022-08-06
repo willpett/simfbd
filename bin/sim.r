@@ -1,4 +1,4 @@
-#!/usr/bin/Rscript
+!/usr/bin/Rscript
 
 args = commandArgs(trailingOnly=TRUE)
 
@@ -19,8 +19,14 @@ sim <- function(){
   
   tree.bd <<- sim.rateshift.taxa(numbsim=1, n=ntaxa, frac = frac, lambda = lambda, mu = mu, times = times  )[[1]]
   
-  times <- c(times, tree.max(tree.bd) )
-  
+  if(tree.max(tree.bd) > max(times))
+  { 
+    times <- c(times,tree.max(tree.bd) )
+  }
+  else
+  {
+    times <- c(times,max(times)+10)
+  }
   # simulate fossils
   s = sim.taxonomy(as.phylo(tree.bd))
   f = sim.fossils.intervals(rates=psi, interval.ages=times, taxonomy=s, use.exact.times=F)
@@ -53,7 +59,7 @@ while(is.null(test) || test=="stopped" || test=="errored")
 #print(c(tree.max(tree.bd),length(unique(taxon_data$taxon)),psi[1]))
 
 write.table(psi[1],file="psi.dat",row.names=FALSE,col.names=FALSE)
-write.table(cbind(lambda,mu),file="lambdamu.dat",row.names=FALSE,col.names=TRUE)
+write.table(cbind(lambda,mu)[which(times<max(taxon_data$max_age)),],file="lambdamu.dat",row.names=FALSE,col.names=TRUE)
 write.table(taxon_data, "taxa.tsv", col.names = TRUE, row.names=FALSE, quote=FALSE, sep="\t")
 extract.ages(file="taxa.tsv",random=FALSE,replicates=1)
 write.table(times[-1],file="epochs.txt",row.names=FALSE,col.names=FALSE)

@@ -1,12 +1,12 @@
 suppressWarnings(suppressMessages(library(extraDistr)))
 
 # number of time intervals
-n <- 10
+n <- 100
 
-times <- seq(from=0,to=90, length.out=n)
+times <- seq(from=0,to=(n-1)*10, length.out=n)
 
 mu <- rexp(n,10)
-lambda <- mu + rexp(n,20)
+lambda <- mu + rexp(n,25)
 psi <- rep(exp(runif(1,log(0.01),log(0.4))),n)
 frac <- rep(1,n)
 
