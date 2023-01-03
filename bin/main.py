@@ -27,7 +27,7 @@ simdir = os.path.abspath(os.getcwd())
 
 def simulate(i):
 	os.chdir(simdir+'/sims')
-	ext = ("%0"+str(len(options.n))+"d") % (i + 1)
+	ext = ("%0"+str(len(options.n))+"d") % i
 	os.system('mkdir sim'+ext)
 	os.chdir('sim'+ext)
 
@@ -35,21 +35,21 @@ def simulate(i):
 
 def infer_bds(i):
         os.chdir(simdir+'/sims')
-        ext = ("%0"+str(len(options.n))+"d") % (i + 1)
+        ext = ("%0"+str(len(options.n))+"d") % i
         os.chdir('sim'+ext)
 
         os.system('rb '+bindir+'/infer-bds.rev')
 
 def infer_fbd(i):
 	os.chdir(simdir+'/sims')
-	ext = ("%0"+str(len(options.n))+"d") % (i + 1)
+	ext = ("%0"+str(len(options.n))+"d") % i
 	os.chdir('sim'+ext)
 
 	os.system('rb '+bindir+'/infer-fbd.rev')
 	
 def infer_pyrate(i):
 	os.chdir(simdir+'/sims')
-	ext = ("%0"+str(len(options.n))+"d") % (i + 1)
+	ext = ("%0"+str(len(options.n))+"d") % i
 	os.chdir('sim'+ext)
 
 	os.system('sh '+bindir+'/infer-pyrate.sh '+str(i))
